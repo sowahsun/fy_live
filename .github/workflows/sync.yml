@@ -1,0 +1,28 @@
+name: Sync with Upstream
+
+on:
+  schedule:
+    - cron: '0 */2 * * *' # 每2小时执行一次
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Add Upstream Remote
+        run: |
+          git remote add upstream https://github.com/Mursor/LIVE.git
+
+      - name: Fetch and Merge Upstream
+        run: |
+          git fetch upstream
+          git pull upstream main --rebase
+          git push origin main
